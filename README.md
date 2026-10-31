@@ -1,8 +1,8 @@
-# CineComp API
+﻿# CineComp API
 
-API REST para gerenciamento de filmes e favoritos, com autenticação JWT.
+API REST para gerenciamento de filmes e favoritos, com autenticaÃ§Ã£o JWT.
 
-[![CI/CD Pipeline](https://github.com/SEU_USUARIO/backend-cinecomp-2026-2/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/SEU_USUARIO/backend-cinecomp-2026-2/actions/workflows/ci-cd.yml)
+[![CI/CD Pipeline](https://github.com/MarcoTFranco/backend-cinecomp-2026-2/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/MarcoTFranco/backend-cinecomp-2026-2/actions/workflows/ci-cd.yml)
 
 ## Como rodar localmente
 
@@ -18,84 +18,84 @@ Acesse: http://localhost:3000/api/docs
 
 ```bash
 npm test                # testes
-npm run test:coverage   # com relatório de cobertura
+npm run test:coverage   # com relatÃ³rio de cobertura
 npm run lint            # lint
 ```
 
 ## Arquitetura da Pipeline
 
-A pipeline CI/CD é implementada com GitHub Actions e executa 6 etapas sequenciais em cada push para `main`:
+A pipeline CI/CD Ã© implementada com GitHub Actions e executa 6 etapas sequenciais em cada push para `main`:
 
 ```
-push → main
-         │
-   ┌─────▼──────┐
-   │ 1. lint-   │  ESLint + Jest (≥70% cobertura)
-   │    test    │
-   └─────┬──────┘
-   ┌─────▼──────┐
-   │2. secret-  │  Gitleaks — bloqueia se token/senha no código
-   │   scan     │
-   └─────┬──────┘
-   ┌─────▼──────┐
-   │3. sonarqube│  SonarCloud Quality Gate
-   └─────┬──────┘
-   ┌─────▼──────┐
-   │4. container│  Trivy — scan HIGH/CRITICAL na imagem Docker
-   │   scan     │
-   └─────┬──────┘
-   ┌─────▼──────┐
-   │5. push     │  Build multi-stage + push para ghcr.io
-   └─────┬──────┘
-   ┌─────▼──────┐
-   │6. deploy   │  Render Deploy Hook
-   └────────────┘
+push â†’ main
+         â”‚
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚ 1. lint-   â”‚  ESLint + Jest (â‰¥70% cobertura)
+   â”‚    test    â”‚
+   â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚2. secret-  â”‚  Gitleaks â€” bloqueia se token/senha no cÃ³digo
+   â”‚   scan     â”‚
+   â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚3. sonarqubeâ”‚  SonarCloud Quality Gate
+   â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚4. containerâ”‚  Trivy â€” scan HIGH/CRITICAL na imagem Docker
+   â”‚   scan     â”‚
+   â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚5. push     â”‚  Build multi-stage + push para ghcr.io
+   â””â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”˜
+   â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”
+   â”‚6. deploy   â”‚  Render Deploy Hook
+   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-Em pushes para `develop`, apenas as etapas 1-3 são executadas (jobs 4-6 têm `if: github.ref == 'refs/heads/main'`).
+Em pushes para `develop`, apenas as etapas 1-3 sÃ£o executadas (jobs 4-6 tÃªm `if: github.ref == 'refs/heads/main'`).
 
 ## Fluxo de Branches
 
 ```
-feature/* ──PR──▶ develop ──PR──▶ main
-                    │                │
+feature/* â”€â”€PRâ”€â”€â–¶ develop â”€â”€PRâ”€â”€â–¶ main
+                    â”‚                â”‚
                etapas 1-3      pipeline completa
                                 + deploy Render
 ```
 
-## Decisões de Segurança
+## DecisÃµes de SeguranÃ§a
 
-| Decisão | Motivo |
+| DecisÃ£o | Motivo |
 |---------|--------|
-| Gitleaks no step 2 | Impede que tokens sejam expostos acidentalmente no histórico Git |
+| Gitleaks no step 2 | Impede que tokens sejam expostos acidentalmente no histÃ³rico Git |
 | Trivy com exit-code 1 | Bloqueia deploy de imagens com vulnerabilidades HIGH/CRITICAL |
-| node:20-alpine | Imagem base mínima reduz superfície de ataque vs node:20 |
-| Multi-stage build | devDependencies (Jest, nodemon) não entram na imagem de produção |
-| Todos os secrets via GitHub Secrets | Nenhuma credencial hardcoded no código ou no Dockerfile |
-| JWT_SECRET obrigatório via env no Render | Nunca usar o valor padrão do `.env.example` em produção |
+| node:20-alpine | Imagem base mÃ­nima reduz superfÃ­cie de ataque vs node:20 |
+| Multi-stage build | devDependencies (Jest, nodemon) nÃ£o entram na imagem de produÃ§Ã£o |
+| Todos os secrets via GitHub Secrets | Nenhuma credencial hardcoded no cÃ³digo ou no Dockerfile |
+| JWT_SECRET obrigatÃ³rio via env no Render | Nunca usar o valor padrÃ£o do `.env.example` em produÃ§Ã£o |
 
-## Quality Gate — SonarCloud
+## Quality Gate â€” SonarCloud
 
-O Quality Gate padrão do SonarCloud bloqueia o pipeline quando:
-- Há bugs de segurança classificados como Critical ou Blocker
-- A cobertura de código novo cai abaixo de 80%
-- O número de code smells excede o threshold configurado
+O Quality Gate padrÃ£o do SonarCloud bloqueia o pipeline quando:
+- HÃ¡ bugs de seguranÃ§a classificados como Critical ou Blocker
+- A cobertura de cÃ³digo novo cai abaixo de 80%
+- O nÃºmero de code smells excede o threshold configurado
 
-A integração é feita via `sonar-project.properties` + `SONAR_TOKEN` (GitHub Secret). O relatório LCOV gerado pelo Jest (`coverage/lcov.info`) é enviado ao SonarCloud para calcular cobertura.
+A integraÃ§Ã£o Ã© feita via `sonar-project.properties` + `SONAR_TOKEN` (GitHub Secret). O relatÃ³rio LCOV gerado pelo Jest (`coverage/lcov.info`) Ã© enviado ao SonarCloud para calcular cobertura.
 
-## Variáveis de Ambiente
+## VariÃ¡veis de Ambiente
 
-| Variável | Descrição | Obrigatória em produção |
+| VariÃ¡vel | DescriÃ§Ã£o | ObrigatÃ³ria em produÃ§Ã£o |
 |----------|-----------|------------------------|
-| `PORT` | Porta do servidor | Não (padrão: 3000) |
+| `PORT` | Porta do servidor | NÃ£o (padrÃ£o: 3000) |
 | `JWT_SECRET` | Chave secreta JWT | **Sim** |
-| `JWT_EXPIRES_IN` | Expiração do token | Não (padrão: 7d) |
-| `FRONTEND_URL` | URL do frontend para CORS | Não |
+| `JWT_EXPIRES_IN` | ExpiraÃ§Ã£o do token | NÃ£o (padrÃ£o: 7d) |
+| `FRONTEND_URL` | URL do frontend para CORS | NÃ£o |
 
-## Secrets Necessários no GitHub
+## Secrets NecessÃ¡rios no GitHub
 
 | Secret | Como obter |
 |--------|-----------|
-| `SONAR_TOKEN` | SonarCloud → My Account → Security → Generate Token |
-| `RENDER_DEPLOY_HOOK_URL` | Render → Service → Settings → Deploy Hook |
-| `GITHUB_TOKEN` | Automático (GitHub Actions) |
+| `SONAR_TOKEN` | SonarCloud â†’ My Account â†’ Security â†’ Generate Token |
+| `RENDER_DEPLOY_HOOK_URL` | Render â†’ Service â†’ Settings â†’ Deploy Hook |
+| `GITHUB_TOKEN` | AutomÃ¡tico (GitHub Actions) |
