@@ -5,8 +5,7 @@ async function getMovies(req, res, next) {
     const { movies, pagination } = await movieService.getMovies(req.query);
     return res.json({
       success: true,
-      data: movies,
-      pagination
+      data: { movies, pagination }
     });
   } catch (error) {
     return next(error);
