@@ -19,7 +19,7 @@ jobs:
           cache: "npm"
 
       - name: Instalar dependências
-        run: npm ci --ignore-scripts
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -60,7 +60,7 @@ jobs:
           cache: "npm"
 
       - name: Instalar dependências
-        run: npm ci --ignore-scripts
+        run: npm ci
 
       - name: Gerar relatório de cobertura
         run: npm run test:coverage

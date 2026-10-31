@@ -1,7 +1,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production --ignore-scripts
+RUN npm ci --only=production
 
 FROM node:20-alpine AS runner
 WORKDIR /app
