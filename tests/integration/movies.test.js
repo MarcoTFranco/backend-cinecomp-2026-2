@@ -1,6 +1,7 @@
 ﻿const request = require("supertest");
 const app = require("../../src/app");
 const { setupTestDb } = require("../helpers/dbSetup");
+const { registerAndLogin } = require("../helpers/authHelper");
 
 let token;
 
@@ -16,18 +17,7 @@ const validMovie = {
 setupTestDb();
 
 beforeAll(async () => {
-  await request(app).post("/api/auth/register").send({
-    name: "Movie User",
-    email: "movies@example.com",
-    password: "senha123"
-  });
-
-  const loginRes = await request(app).post("/api/auth/login").send({
-    email: "movies@example.com",
-    password: "senha123"
-  });
-
-  token = loginRes.body.data.token;
+  token = await registerAndLogin("movies@example.com", "Movie User");
 });
 
 describe("GET /api/movies", () => {

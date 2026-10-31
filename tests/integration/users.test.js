@@ -1,23 +1,14 @@
 ﻿const request = require("supertest");
 const app = require("../../src/app");
 const { setupTestDb } = require("../helpers/dbSetup");
+const { registerAndLogin } = require("../helpers/authHelper");
 
 let token;
 
 setupTestDb();
 
 beforeAll(async () => {
-  await request(app).post("/api/auth/register").send({
-    name: "Profile User",
-    email: "userstest@example.com",
-    password: "senha123"
-  });
-
-  const loginRes = await request(app).post("/api/auth/login").send({
-    email: "userstest@example.com",
-    password: "senha123"
-  });
-  token = loginRes.body.data.token;
+  token = await registerAndLogin("userstest@example.com", "Profile User");
 });
 
 describe("GET /api/users/me", () => {
