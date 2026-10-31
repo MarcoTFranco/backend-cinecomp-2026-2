@@ -1,0 +1,10 @@
+node_modules
+database
+tests
+coverage
+docs
+.env
+*.sqlite
+.git
+.github
+*.md
