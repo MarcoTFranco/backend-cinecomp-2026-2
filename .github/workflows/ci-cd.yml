@@ -19,7 +19,7 @@ jobs:
           cache: "npm"
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm ci --ignore-scripts && npm rebuild sqlite3 bcrypt
 
       - name: Lint
         run: npm run lint
@@ -60,12 +60,12 @@ jobs:
           cache: "npm"
 
       - name: Instalar dependências
-        run: npm ci
+        run: npm ci --ignore-scripts && npm rebuild sqlite3 bcrypt
 
       - name: Gerar relatório de cobertura
         run: npm run test:coverage
 
-      - uses: SonarSource/sonarqube-scan-action@v5.0.0
+      - uses: SonarSource/sonarqube-scan-action@0303d6b62e310685c0e34d0b9cde218036885c4d # v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
