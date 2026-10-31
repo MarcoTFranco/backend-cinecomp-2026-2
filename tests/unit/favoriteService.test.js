@@ -1,5 +1,4 @@
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+﻿const { setupTestDb } = require("../helpers/dbSetup");
 const authService = require("../../src/services/authService");
 const movieService = require("../../src/services/movieService");
 const favoriteService = require("../../src/services/favoriteService");
@@ -16,8 +15,9 @@ const validMovie = {
   rating: 7.5
 };
 
+setupTestDb();
+
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
   const user = await authService.register({
     name: "Fav User",
     email: "favuser@example.com",
@@ -26,10 +26,6 @@ beforeAll(async () => {
   userId = user.id;
   const movie = await movieService.createMovie(validMovie);
   movieId = movie.id;
-});
-
-afterAll(async () => {
-  await sequelize.close();
 });
 
 describe("favoriteService.addFavorite", () => {

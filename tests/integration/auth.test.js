@@ -1,15 +1,8 @@
-const request = require("supertest");
+﻿const request = require("supertest");
 const app = require("../../src/app");
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+const { setupTestDb } = require("../helpers/dbSetup");
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
-});
-
-afterAll(async () => {
-  await sequelize.close();
-});
+setupTestDb();
 
 describe("POST /api/auth/register", () => {
   it("retorna 201 com usuário criado", async () => {

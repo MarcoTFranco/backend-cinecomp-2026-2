@@ -1,13 +1,12 @@
-const request = require("supertest");
+﻿const request = require("supertest");
 const app = require("../../src/app");
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+const { setupTestDb } = require("../helpers/dbSetup");
 
 let token;
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
+setupTestDb();
 
+beforeAll(async () => {
   await request(app).post("/api/auth/register").send({
     name: "Profile User",
     email: "userstest@example.com",
@@ -19,10 +18,6 @@ beforeAll(async () => {
     password: "senha123"
   });
   token = loginRes.body.data.token;
-});
-
-afterAll(async () => {
-  await sequelize.close();
 });
 
 describe("GET /api/users/me", () => {

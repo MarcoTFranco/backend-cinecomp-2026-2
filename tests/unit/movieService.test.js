@@ -1,5 +1,4 @@
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+const { setupTestDb } = require("../helpers/dbSetup");
 const movieService = require("../../src/services/movieService");
 
 const validMovie = {
@@ -11,13 +10,7 @@ const validMovie = {
   rating: 8.8
 };
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
-});
-
-afterAll(async () => {
-  await sequelize.close();
-});
+setupTestDb();
 
 describe("movieService.createMovie", () => {
   it("cria um filme com dados válidos", async () => {

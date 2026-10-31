@@ -1,14 +1,7 @@
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+const { setupTestDb } = require("../helpers/dbSetup");
 const authService = require("../../src/services/authService");
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
-});
-
-afterAll(async () => {
-  await sequelize.close();
-});
+setupTestDb();
 
 describe("authService.register", () => {
   it("registra um usuário com dados válidos", async () => {

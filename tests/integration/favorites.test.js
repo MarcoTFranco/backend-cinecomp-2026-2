@@ -1,7 +1,6 @@
-const request = require("supertest");
+﻿const request = require("supertest");
 const app = require("../../src/app");
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+const { setupTestDb } = require("../helpers/dbSetup");
 
 let token;
 let movieId;
@@ -15,9 +14,9 @@ const validMovie = {
   rating: 7.0
 };
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
+setupTestDb();
 
+beforeAll(async () => {
   await request(app).post("/api/auth/register").send({
     name: "Fav User",
     email: "favtest@example.com",
@@ -35,10 +34,6 @@ beforeAll(async () => {
     .set("Authorization", `Bearer ${token}`)
     .send(validMovie);
   movieId = movieRes.body.data.id;
-});
-
-afterAll(async () => {
-  await sequelize.close();
 });
 
 describe("GET /api/favorites", () => {

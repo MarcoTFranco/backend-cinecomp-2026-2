@@ -1,22 +1,18 @@
-const { sequelize } = require("../../src/config/database");
-require("../../src/models");
+﻿const { setupTestDb } = require("../helpers/dbSetup");
 const authService = require("../../src/services/authService");
 const userService = require("../../src/services/userService");
 
 let userId;
 
+setupTestDb();
+
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
   const user = await authService.register({
     name: "Profile User",
     email: "profile@example.com",
     password: "senha123"
   });
   userId = user.id;
-});
-
-afterAll(async () => {
-  await sequelize.close();
 });
 
 describe("userService.getProfile", () => {
