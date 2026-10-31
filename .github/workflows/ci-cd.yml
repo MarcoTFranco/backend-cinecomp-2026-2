@@ -65,7 +65,7 @@ jobs:
       - name: Gerar relatório de cobertura
         run: npm run test:coverage
 
-      - uses: SonarSource/sonarqube-scan-action@2500896c3aa7c49cb3945cad1668b54dff64714e # v5
+      - uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
