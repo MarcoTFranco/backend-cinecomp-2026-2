@@ -1,4 +1,4 @@
-function errorMiddleware(error, req, res, next) {
+function errorMiddleware(error, req, res, _next) {
   const statusCode = error.statusCode || 500;
 
   if (process.env.NODE_ENV !== "test" && statusCode >= 500) {
